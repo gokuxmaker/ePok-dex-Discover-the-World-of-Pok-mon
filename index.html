@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=480"/>
+<title>Pokédex</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:480px;height:800px;overflow:hidden;background:#fff;font-family:'Exo 2',sans-serif;color:#000}
+
+.card{width:480px;height:800px;background:#fff;display:flex;flex-direction:column}
+
+/* HEADER */
+.card-header{
+  background:#000;
+  padding:12px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.card-type-label{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#aaa}
+.card-hp{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#fff;letter-spacing:1px}
+.card-hp span{font-size:12px;font-weight:700;letter-spacing:2px;margin-right:3px}
+
+/* NAME BAND */
+.name-band{
+  background:#fff;
+  padding:10px 18px 8px 18px;
+  display:flex;align-items:baseline;justify-content:space-between;
+  border-bottom:2px solid #000;
+  flex-shrink:0;
+}
+#poke-name{font-family:'Orbitron',monospace;font-size:30px;font-weight:900;text-transform:uppercase;color:#000;letter-spacing:1px;line-height:1}
+.name-meta{text-align:right}
+.num-tag{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#555}
+.genus-tag{font-size:12px;font-weight:900;color:#555;text-transform:uppercase;letter-spacing:1px}
+
+/* ART FRAME */
+.art-frame{
+  background:#aaa;
+  margin:14px 18px 0 18px;
+  height:256px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+#poke-img{width:220px;height:220px;object-fit:contain;filter:grayscale(100%) contrast(1.15)}
+
+/* TYPE + DATE ROW */
+.art-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:10px 18px 0 18px;
+  flex-shrink:0;
+}
+.types-row{display:flex;gap:8px}
+.tpill{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;background:#000;color:#fff}
+.date-tag{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:900;color:#555;letter-spacing:1px;text-transform:uppercase}
+
+/* RULE */
+.rule{margin:10px 18px;border:none;border-top:2px solid #000;flex-shrink:0}
+
+/* DEX ENTRY */
+.dex-box{
+  margin:0 18px;
+  padding:10px 14px;
+  background:#fff;
+  border:2px solid #000;
+  position:relative;
+  flex-shrink:0;
+}
+.dex-label{position:absolute;top:-10px;left:10px;background:#fff;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:2px;color:#000;padding:0 5px;text-transform:uppercase}
+#poke-desc{font-size:14px;line-height:1.6;color:#000;font-weight:900;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* STATS */
+.stats-section{margin:10px 18px 0 18px;flex:1;display:flex;flex-direction:column}
+.stats-header{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#000;margin-bottom:7px;flex-shrink:0}
+.stats-list{flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.stat-row{display:flex;align-items:center;gap:8px}
+.stat-lbl{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:#000;width:38px;text-align:right;flex-shrink:0}
+.stat-track{flex:1;height:20px;background:#aaa;border:2px solid #000;overflow:hidden}
+.stat-fill{height:100%}
+.stat-fill.hi{background:#000}
+.stat-fill.lo{background:#555}
+.stat-num{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:#000;width:34px;text-align:right;flex-shrink:0}
+
+/* INFO CHIPS */
+.info-row{display:flex;gap:0;flex-shrink:0;margin:10px 18px 0 18px;border:2px solid #000}
+.chip{flex:1;text-align:center;padding:7px 6px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:900;color:#000;background:#fff;border-right:2px solid #000}
+.chip:last-child{border-right:none}
+
+/* BOTTOM STRIP */
+.bottom-strip{background:#000;padding:7px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;margin-top:10px}
+.bottom-strip span{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:2px;color:#aaa;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="card-header">
+    <span class="card-type-label" id="type-label">—</span>
+    <span class="card-hp"><span>HP </span><span id="hp-val">—</span></span>
+  </div>
+
+  <div class="name-band">
+    <div id="poke-name">—</div>
+    <div class="name-meta">
+      <div class="num-tag" id="num-tag">#001</div>
+      <div class="genus-tag" id="genus-tag"></div>
+    </div>
+  </div>
+
+  <div class="art-frame">
+    <img id="poke-img" src="" alt=""/>
+  </div>
+
+  <div class="art-footer">
+    <div class="types-row" id="types-row"></div>
+    <div class="date-tag" id="date-tag"></div>
+  </div>
+
+  <hr class="rule"/>
+
+  <div class="dex-box">
+    <div class="dex-label">Pokédex Entry</div>
+    <p id="poke-desc">—</p>
+  </div>
+
+  <div class="stats-section">
+    <div class="stats-header">Base Stats</div>
+    <div class="stats-list" id="stats-list"></div>
+  </div>
+
+  <div class="info-row" id="info-row"></div>
+
+  <div class="bottom-strip">
+    <span>Pokédex</span>
+    <span id="set-tag"></span>
+    
+  </div>
+
+</div>
+<script>
+const SL={hp:'HP',attack:'ATK',defense:'DEF','special-attack':'SpA','special-defense':'SpD',speed:'SPD'};
+const id=Math.floor(Math.random()*1010)+1;
+const imgEl=document.getElementById('poke-img');
+
+imgEl.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/'+id+'.png';
+imgEl.style.imageRendering='pixelated';
+const art=new Image();
+art.onload=function(){imgEl.src=art.src;imgEl.style.imageRendering='auto';};
+art.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/'+id+'.png';
+
+async function load(){
+  try{
+    const[pr,sr]=await Promise.all([
+      fetch('https://pokeapi.co/api/v2/pokemon/'+id).then(r=>r.json()),
+      fetch('https://pokeapi.co/api/v2/pokemon-species/'+id).then(r=>r.json())
+    ]);
+    document.getElementById('poke-name').textContent=pr.name;
+    const numStr='#'+String(pr.id).padStart(3,'0');
+    document.getElementById('num-tag').textContent=numStr;
+    document.getElementById('set-tag').textContent='No. '+String(pr.id).padStart(3,'0')+' / 1010';
+    const g=(sr.genera||[]).find(g=>g.language.name==='en');
+    document.getElementById('genus-tag').textContent=g?g.genus:'';
+    const hp=pr.stats.find(s=>s.stat.name==='hp');
+    document.getElementById('hp-val').textContent=hp?hp.base_stat:'—';
+    document.getElementById('type-label').textContent=pr.types.map(t=>t.type.name).join(' / ').toUpperCase();
+    document.getElementById('types-row').innerHTML=pr.types.map(t=>'<div class="tpill">'+t.type.name+'</div>').join('');
+    const en=(sr.flavor_text_entries||[]).filter(e=>e.language.name==='en');
+    const pk=en[Math.floor(Math.random()*Math.min(en.length,6))];
+    document.getElementById('poke-desc').textContent=pk?pk.flavor_text.replace(/[\f\n\r]/g,' '):'No entry found.';
+    document.getElementById('stats-list').innerHTML=pr.stats.map(s=>{
+      const p=Math.min(100,Math.round((s.base_stat/255)*100));
+      return '<div class="stat-row"><div class="stat-lbl">'+(SL[s.stat.name]||s.stat.name)+'</div><div class="stat-track"><div class="stat-fill '+(p>=50?'hi':'lo')+'" style="width:'+p+'%"></div></div><div class="stat-num">'+s.base_stat+'</div></div>';
+    }).join('');
+    const ht=(pr.height/10).toFixed(1);
+    const wt=(pr.weight/10).toFixed(1);
+    const gen=(sr.generation?.name||'').replace('generation-','Gen ').toUpperCase();
+    const hab=sr.habitat?.name?sr.habitat.name.charAt(0).toUpperCase()+sr.habitat.name.slice(1):'Unknown';
+    document.getElementById('info-row').innerHTML=
+      '<div class="chip">Ht: '+ht+' m</div>'+
+      '<div class="chip">Wt: '+wt+' kg</div>'+
+      '<div class="chip">'+(gen||'—')+'</div>'+
+      '<div class="chip">'+hab+'</div>';
+    document.getElementById('date-tag').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  }catch(e){
+    document.getElementById('poke-name').textContent='ERROR';
+    document.getElementById('poke-desc').textContent='Could not load data.';
+  }
+}
+load();
+</script>
+</body>
+</html>
